@@ -1,9 +1,9 @@
 package wyCash;
 
 /**
- * Created by pierre on 2018-07-12.
+ * Based on Ken Beck's "TDD by example"
  */
-public class Money {
+public class Money implements Expression{
 
     // visibility has to change from private to protected
     // so the subclass can still see it.
@@ -24,14 +24,26 @@ public class Money {
         return new Money(amount, "CHF");
     }
 
-    public Money times(int multiplier){
+    public Expression times(int multiplier){
         return new Money(amount * multiplier, currency);
     }
 
-    public Money plus(Money addend) {
-        return new Money(amount + addend.amount, currency);
+    /*
+    public Expression plus(Money addend) {
+        return new Sum(this, addend);
+    }
+    */
+
+    @Override
+    public Expression plus(Expression addend) {
+        return new Sum(this, addend);
     }
 
+
+    public Money reduce(Bank bank, String to){
+       int rate = bank.rate(currency, to);
+       return new Money(amount / rate, to);
+    }
 
     public String currency() {
         return currency;
